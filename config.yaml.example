@@ -1,0 +1,91 @@
+# iKuai 网页认证服务配置示例
+
+# ============================================
+# 示例1: 本地用户名密码认证（默认方式）
+# ============================================
+server:
+  host: "0.0.0.0"
+  port: "8088"
+  debug: false              # 调试模式：true=显示详细日志和调试信息，false=生产模式
+
+ikuai:
+  portal_url: "https://portal.ikuai8-wifi.com/Action/webauth-up"
+  app_key: "your_app_key_here"  # 从爱快云平台获取的 AppKey
+
+auth:
+  method: "simple"          # 认证方式：simple (本地用户名密码) | api (外部API验证)
+  simple_users:             # 用户列表
+    user01: "password123"
+    admin: "admin888"
+    test: "test123"
+
+# ============================================
+# 示例2: 外部API认证
+# ============================================
+# 将 auth.method 改为 "api" 并配置以下内容：
+#
+# auth:
+#   method: "api"
+#   
+#   # 外部API认证配置
+#   api:
+#     url: "https://your-domain.com/api/auth/verify"  # 您的认证API地址
+#     method: "POST"                                    # 请求方法：GET 或 POST
+#     timeout: 5                                        # 超时时间（秒）
+#     
+#     # 请求头配置
+#     headers:
+#       Content-Type: "application/json"
+#       Authorization: "Bearer your-api-token-here"
+#       X-API-Key: "your-api-key"
+#     
+#     # 请求体模板（仅POST时使用），{{username}} 和 {{password}} 会被自动替换
+#     body_template: |
+#       {
+#         "username": "{{username}}",
+#         "password": "{{password}}",
+#         "source": "ikuai-portal"
+#       }
+#     
+#     # 响应验证配置
+#     response:
+#       success_field: "success"      # API响应中表示成功的字段名
+#       success_value: true            # 成功时该字段的值（可以是 true/false 或字符串）
+#       message_field: "message"       # 错误消息字段名（可选）
+
+# ============================================
+# API响应格式说明
+# ============================================
+# 
+# 您的API应该返回JSON格式的响应，例如：
+#
+# 成功时:
+# {
+#   "success": true,
+#   "message": "认证成功",
+#   "data": {...}
+# }
+#
+# 失败时:
+# {
+#   "success": false,
+#   "message": "用户名或密码错误"
+# }
+#
+# ============================================
+# 其他API响应格式示例
+# ============================================
+#
+# 格式1: {"code": 0, "msg": "ok"}
+# 配置:
+#   response:
+#     success_field: "code"
+#     success_value: 0
+#     message_field: "msg"
+#
+# 格式2: {"status": "success", "error": null}
+# 配置:
+#   response:
+#     success_field: "status"
+#     success_value: "success"
+#     message_field: "error"

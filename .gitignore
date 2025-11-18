@@ -26,7 +26,34 @@ go.work.sum
 
 # env file
 .env
+config.yaml
 
-# Editor/IDE
-# .idea/
-# .vscode/
+# Logs
+logs/
+*.log
+
+# Build artifacts
+dist/
+*.tar.gz
+
+# Binary files
+ikuai-auth
+ikuai-auth-*
+*.pid
+
+# macOS
+.DS_Store
+
+# Test files
+test.html
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo

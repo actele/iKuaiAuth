@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认证成功 - iKuai 网络认证</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+                'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: #141414;
+        }
+
+        .success-container {
+            background: white;
+            border-radius: 20px;
+            padding: 56px 48px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 8px 40px rgba(0, 0, 0, 0.04);
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        body.dark-mode .success-container {
+            background: linear-gradient(145deg, #1a1a1a 0%, #1f1f1f 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            background: #52c41a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-icon i {
+            color: white;
+            font-size: 36px;
+        }
+
+        h1 {
+            color: rgba(0, 0, 0, 0.85);
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode h1 {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .subtitle {
+            color: rgba(0, 0, 0, 0.45);
+            font-size: 14px;
+            margin-bottom: 32px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .subtitle {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .info-card {
+            background: #fafafa;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 28px;
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-mode .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: border-color 0.3s ease;
+        }
+
+        body.dark-mode .info-item {
+            border-bottom-color: #303030;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            display: flex;
+            align-items: center;
+            color: rgba(0, 0, 0, 0.45);
+            font-size: 14px;
+            width: 100px;
+            flex-shrink: 0;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .info-label {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .info-label i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+            color: #1890ff;
+        }
+
+        .info-value {
+            color: rgba(0, 0, 0, 0.85);
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .info-value {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: rgba(0, 0, 0, 0.85);
+            border: 1px solid #d9d9d9;
+        }
+
+        body.dark-mode .btn-secondary {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.85);
+            border-color: #434343;
+        }
+
+        .btn-secondary:hover {
+            color: #40a9ff;
+            border-color: #40a9ff;
+        }
+
+        .countdown {
+            margin-top: 16px;
+            color: rgba(0, 0, 0, 0.45);
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .countdown {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        /* 暗黑模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: rgba(0, 0, 0, 0.65);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #1f1f1f;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.65);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .theme-toggle:hover {
+            color: #1890ff;
+            border-color: #1890ff;
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.25);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* 调试面板样式 */
+        .debug-panel {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 2px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: left;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            border: 1px solid #303030;
+        }
+
+        .debug-panel.show {
+            display: block;
+        }
+
+        .debug-title {
+            color: #4ec9b0;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .debug-section {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #252526;
+            border-radius: 6px;
+            border-left: 3px solid #007acc;
+        }
+
+        .debug-label {
+            color: #9cdcfe;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .debug-content {
+            color: #ce9178;
+            word-break: break-all;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .debug-success {
+            border-left-color: #4ec9b0;
+        }
+
+        .debug-error {
+            border-left-color: #f48771;
+        }
+
+        .debug-warning {
+            border-left-color: #dcdcaa;
+        }
+
+        .debug-log {
+            color: #808080;
+            margin: 3px 0;
+        }
+
+        .debug-timestamp {
+            color: #608b4e;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .success-container {
+                padding: 40px 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 暗黑模式切换按钮 -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+
+    <div class="success-container">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        
+        <h1>网络认证成功</h1>
+        <p class="subtitle">您已成功连接到网络</p>
+
+        <div class="info-card">
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-user"></i>
+                    用户名
+                </div>
+                <div class="info-value" id="username">加载中...</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-network-wired"></i>
+                    内网IP
+                </div>
+                <div class="info-value" id="userIP">加载中...</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">
+                    <i class="fas fa-ethernet"></i>
+                    MAC地址
+                </div>
+                <div class="info-value" id="userMAC">加载中...</div>
+            </div>
+                    </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="startBrowsing()" id="releaseBtn">
+                <i class="fas fa-globe"></i>
+                开始上网
+            </button>
+        </div>
+
+        <!-- 调试面板 -->
+        <div class="debug-panel" id="debugPanel">
+            <div class="debug-title">
+                <i class="fas fa-bug"></i>
+                调试信息
+            </div>
+            <div id="debugContent"></div>
+        </div>
+
+        <div class="countdown" id="countdown"></div>
+    </div>
+    </div>
+
+    <script>
+        // 从URL参数获取用户信息和放行URL
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                username: params.get('username') || '未知',
+                userIP: params.get('ip') || '未知',
+                userMAC: params.get('mac') || '未知',
+                releaseURL: params.get('release_url') || '',
+                debug: params.get('debug') === '1' // 调试模式标志
+            };
+        }
+
+        // 切换暗黑模式
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.add('dark-mode');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // 初始化主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // 显示用户信息
+        function displayUserInfo() {
+            const info = getUrlParams();
+            document.getElementById('username').textContent = info.username;
+            document.getElementById('userIP').textContent = info.userIP;
+            document.getElementById('userMAC').textContent = info.userMAC;
+        }
+
+        // 添加调试日志（仅在调试模式下）
+        function addDebugLog(message, type = 'info') {
+            const info = getUrlParams();
+            if (!info.debug) return; // 非调试模式不记录日志
+            
+            const debugPanel = document.getElementById('debugPanel');
+            const debugContent = document.getElementById('debugContent');
+            
+            // 显示调试面板
+            debugPanel.classList.add('show');
+            
+            const timestamp = new Date().toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 3 });
+            
+            let className = 'debug-section';
+            if (type === 'success') className += ' debug-success';
+            if (type === 'error') className += ' debug-error';
+            if (type === 'warning') className += ' debug-warning';
+            
+            const logElement = document.createElement('div');
+            logElement.className = className;
+            logElement.innerHTML = `
+                <div class="debug-log">
+                    <span class="debug-timestamp">[${timestamp}]</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            debugContent.appendChild(logElement);
+            
+            // 自动滚动到底部
+            debugPanel.scrollTop = debugPanel.scrollHeight;
+            
+            // 同时输出到控制台
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        // 显示放行URL详情
+        function showReleaseDetails(releaseURL) {
+            const debugContent = document.getElementById('debugContent');
+            
+            // 清空之前的内容
+            debugContent.innerHTML = '';
+            
+            // 显示原始URL
+            const urlSection = document.createElement('div');
+            urlSection.className = 'debug-section';
+            urlSection.innerHTML = `
+                <div class="debug-label">📡 放行URL（原始）</div>
+                <div class="debug-content">${releaseURL}</div>
+            `;
+            debugContent.appendChild(urlSection);
+            
+            // 显示解码后的URL
+            const decodedSection = document.createElement('div');
+            decodedSection.className = 'debug-section';
+            decodedSection.innerHTML = `
+                <div class="debug-label">📋 放行URL（解码）</div>
+                <div class="debug-content">${decodeURIComponent(releaseURL)}</div>
+            `;
+            debugContent.appendChild(decodedSection);
+            
+            // 解析URL参数
+            try {
+                const url = new URL(releaseURL);
+                const params = {};
+                url.searchParams.forEach((value, key) => {
+                    params[key] = value;
+                });
+                
+                const paramsSection = document.createElement('div');
+                paramsSection.className = 'debug-section debug-success';
+                paramsSection.innerHTML = `
+                    <div class="debug-label">🔍 URL参数解析</div>
+                    <div class="debug-content">${JSON.stringify(params, null, 2)}</div>
+                `;
+                debugContent.appendChild(paramsSection);
+            } catch (e) {
+                const errorSection = document.createElement('div');
+                errorSection.className = 'debug-section debug-error';
+                errorSection.innerHTML = `
+                    <div class="debug-label">❌ URL解析失败</div>
+                    <div class="debug-content">${e.message}</div>
+                `;
+                debugContent.appendChild(errorSection);
+            }
+        }
+
+        // 开始上网（发起放行请求）
+        function startBrowsing() {
+            const info = getUrlParams();
+            const releaseURL = info.releaseURL;
+            const debugMode = info.debug;
+            
+            if (!releaseURL) {
+                addDebugLog('❌ 错误：未获取到放行URL，请重新认证', 'error');
+                if (debugMode) alert('错误：未获取到放行URL，请重新认证');
+                return;
+            }
+            
+            if (debugMode) {
+                // 调试模式：显示详细信息并跳转到放行页面
+                addDebugLog('🌐 用户点击"开始上网"按钮', 'info');
+                showReleaseDetails(releaseURL);
+                
+                addDebugLog('========== 开始放行流程 ==========', 'info');
+                addDebugLog(`🕐 当前时间: ${new Date().toLocaleString()}`, 'info');
+                addDebugLog('', 'info');
+                addDebugLog('📡 即将跳转到爱快路由器放行页面', 'success');
+                addDebugLog('⏱️ 3秒后自动跳转...', 'warning');
+                
+                const btn = document.getElementById('releaseBtn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 3秒后跳转...';
+                }
+                
+                let countdown = 3;
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    if (btn && countdown > 0) {
+                        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${countdown}秒后跳转...`;
+                    }
+                }, 1000);
+                
+                setTimeout(() => {
+                    clearInterval(countdownInterval);
+                    addDebugLog('🚀 正在跳转到放行页面...', 'success');
+                    addDebugLog('===============================', 'info');
+                    window.location.href = releaseURL;
+                }, 3000);
+            } else {
+                // 非调试模式：静默发起放行请求，然后跳转到导航页
+                console.log('🌐 自动发起放行请求（静默模式）');
+                
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.id = 'releaseFrame';
+                iframe.onload = () => {
+                    console.log('✅ 放行请求已完成');
+                    // 放行成功后跳转到导航页
+                    setTimeout(() => {
+                        window.location.href = '/nav';
+                    }, 500);
+                };
+                iframe.onerror = () => {
+                    console.log('⚠️ 放行请求出错');
+                    // 即使出错也跳转到导航页
+                    setTimeout(() => {
+                        window.location.href = '/nav';
+                    }, 500);
+                };
+                
+                document.body.appendChild(iframe);
+                iframe.src = releaseURL;
+                
+                const btn = document.getElementById('releaseBtn');
+                if (btn) {
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 放行中...';
+                    btn.disabled = true;
+                }
+                
+                const countdownEl = document.getElementById('countdown');
+                if (countdownEl) {
+                    countdownEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在放行并跳转...';
+                }
+            }
+        }
+
+        // 自动倒计时放行（非调试模式）
+        function autoRelease() {
+            const info = getUrlParams();
+            const debugMode = info.debug;
+            
+            if (debugMode) {
+                // 调试模式：提示手动点击
+                const countdownEl = document.getElementById('countdown');
+                countdownEl.innerHTML = `<i class="fas fa-info-circle"></i> 点击"开始上网"后，查看下方调试信息`;
+                countdownEl.style.color = '#1890ff';
+            } else {
+                // 非调试模式：3秒倒计时自动放行
+                let countdown = 3;
+                const countdownEl = document.getElementById('countdown');
+                const btn = document.getElementById('releaseBtn');
+                
+                const countdownInterval = setInterval(() => {
+                    if (countdown > 0) {
+                        countdownEl.innerHTML = `<i class="fas fa-clock"></i> ${countdown}秒后自动放行，或点击按钮立即放行`;
+                        countdown--;
+                    } else {
+                        clearInterval(countdownInterval);
+                        startBrowsing();
+                    }
+                }, 1000);
+                
+                // 更新按钮文字
+                if (btn) {
+                    btn.innerHTML = '<i class="fas fa-hand-pointer"></i> 点击立即放行';
+                }
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化主题
+            initTheme();
+            
+            displayUserInfo();
+            
+            const info = getUrlParams();
+            const releaseURL = info.releaseURL;
+            const debugMode = info.debug;
+            
+            if (debugMode) {
+                addDebugLog('🚀 页面加载完成', 'success');
+                addDebugLog(`ℹ️ 用户信息: ${info.username} (${info.userIP})`, 'info');
+                addDebugLog('', 'info');
+                
+                if (releaseURL) {
+                    // 自动显示放行URL详情
+                    showReleaseDetails(releaseURL);
+                    addDebugLog('', 'info');
+                    addDebugLog('💡 点击"开始上网"按钮发起放行请求', 'info');
+                } else {
+                    addDebugLog('❌ 未找到放行URL参数', 'error');
+                }
+            }
+            
+            // 启动自动倒计时（非调试模式）或显示提示（调试模式）
+            autoRelease();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+  <defs>
+    <style>
+      .math-curve { fill: none; stroke: rgba(79,172,254,0.3); stroke-width: 1.5; }
+      .atom-orbit { fill: none; stroke: rgba(79,172,254,0.2); stroke-width: 1; }
+      .nucleus { fill: rgba(79,172,254,0.8); }
+      .electron { fill: rgba(0,242,254,0.9); }
+      .formula { fill: rgba(79,172,254,0.4); font-family: 'Times New Roman', serif; font-size: 14px; }
+      .grid-line { stroke: rgba(79,172,254,0.1); stroke-width: 0.5; }
+      .pulse { animation: pulse 3s ease-in-out infinite; }
+      .orbit { animation: orbit 4s linear infinite; }
+      .float { animation: float 6s ease-in-out infinite; }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 0.6; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+      }
+      
+      @keyframes orbit {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+    </style>
+  </defs>
+  
+  <!-- 坐标网格 -->
+  <g class="coordinate-grid">
+    <!-- 水平网格线 -->
+    <line class="grid-line" x1="0" y1="150" x2="1200" y2="150"/>
+    <line class="grid-line" x1="0" y1="300" x2="1200" y2="300"/>
+    <line class="grid-line" x1="0" y1="450" x2="1200" y2="450"/>
+    <!-- 垂直网格线 -->
+    <line class="grid-line" x1="200" y1="0" x2="200" y2="600"/>
+    <line class="grid-line" x1="400" y1="0" x2="400" y2="600"/>
+    <line class="grid-line" x1="600" y1="0" x2="600" y2="600"/>
+    <line class="grid-line" x1="800" y1="0" x2="800" y2="600"/>
+    <line class="grid-line" x1="1000" y1="0" x2="1000" y2="600"/>
+  </g>
+  
+  <!-- 正弦波函数 sin(x) -->
+  <path class="math-curve" d="M50 300 Q100 250 150 300 Q200 350 250 300 Q300 250 350 300 Q400 350 450 300 Q500 250 550 300 Q600 350 650 300 Q700 250 750 300 Q800 350 850 300 Q900 250 950 300 Q1000 350 1050 300 Q1100 250 1150 300"/>
+  
+  <!-- 余弦波函数 cos(x) -->
+  <path class="math-curve" d="M50 250 Q100 300 150 250 Q200 200 250 250 Q300 300 350 250 Q400 200 450 250 Q500 300 550 250 Q600 200 650 250 Q700 300 750 250 Q800 200 850 250 Q900 300 950 250 Q1000 200 1050 250 Q1100 300 1150 250"/>
+  
+  <!-- 抛物线 y = x² -->
+  <path class="math-curve" d="M100 500 Q200 400 300 350 Q400 320 500 310 Q600 320 700 350 Q800 400 900 500"/>
+  
+  <!-- 指数函数 e^x -->
+  <path class="math-curve" d="M50 450 Q150 430 250 380 Q350 300 450 180 Q550 120 650 100 Q750 95 850 92"/>
+  
+  <!-- 原子结构 1 -->
+  <g class="atom" transform="translate(150,150)">
+    <!-- 原子核 -->
+    <circle class="nucleus pulse" cx="0" cy="0" r="8"/>
+    <!-- 电子轨道 -->
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="40" ry="15"/>
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="40" ry="15" transform="rotate(60)"/>
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="40" ry="15" transform="rotate(120)"/>
+    <!-- 电子 -->
+    <circle class="electron orbit" cx="40" cy="0" r="3" transform-origin="0 0"/>
+    <circle class="electron orbit" cx="-20" cy="35" r="3" transform-origin="0 0" style="animation-delay: -1.3s"/>
+    <circle class="electron orbit" cx="-20" cy="-35" r="3" transform-origin="0 0" style="animation-delay: -2.6s"/>
+  </g>
+  
+  <!-- 原子结构 2 -->
+  <g class="atom" transform="translate(800,400)">
+    <circle class="nucleus pulse" cx="0" cy="0" r="6"/>
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="30" ry="12"/>
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="30" ry="12" transform="rotate(90)"/>
+    <circle class="electron orbit" cx="30" cy="0" r="2.5" transform-origin="0 0"/>
+    <circle class="electron orbit" cx="0" cy="30" r="2.5" transform-origin="0 0" style="animation-delay: -2s"/>
+  </g>
+  
+  <!-- 分子结构 -->
+  <g class="molecule" transform="translate(500,450)">
+    <!-- 碳原子 -->
+    <circle class="nucleus" cx="0" cy="0" r="6" fill="rgba(79,172,254,0.8)"/>
+    <circle class="nucleus" cx="40" cy="0" r="6" fill="rgba(79,172,254,0.8)"/>
+    <circle class="nucleus" cx="20" cy="-35" r="6" fill="rgba(79,172,254,0.8)"/>
+    <circle class="nucleus" cx="20" cy="35" r="6" fill="rgba(79,172,254,0.8)"/>
+    <!-- 化学键 -->
+    <line class="atom-orbit" x1="0" y1="0" x2="40" y2="0"/>
+    <line class="atom-orbit" x1="0" y1="0" x2="20" y2="-35"/>
+    <line class="atom-orbit" x1="40" y1="0" x2="20" y2="-35"/>
+    <line class="atom-orbit" x1="0" y1="0" x2="20" y2="35"/>
+    <line class="atom-orbit" x1="40" y1="0" x2="20" y2="35"/>
+  </g>
+  
+  <!-- 数学公式 -->
+  <text class="formula float" x="300" y="80">E = mc²</text>
+  <text class="formula float" x="700" y="120" style="animation-delay: -2s">∫ f(x)dx</text>
+  <text class="formula float" x="100" y="520" style="animation-delay: -4s">∇²ψ = 0</text>
+  <text class="formula float" x="900" y="80" style="animation-delay: -1s">F = ma</text>
+  <text class="formula float" x="450" y="580" style="animation-delay: -3s">ℏω = E</text>
+  <text class="formula float" x="50" y="80" style="animation-delay: -5s">π = 3.14159...</text>
+  
+  <!-- 化学符号 -->
+  <g class="chemical-symbols">
+    <text class="formula float" x="950" y="300" style="animation-delay: -1.5s">H₂O</text>
+    <text class="formula float" x="250" y="480" style="animation-delay: -3.5s">CO₂</text>
+    <text class="formula float" x="750" y="500" style="animation-delay: -2.5s">NaCl</text>
+    <text class="formula float" x="120" y="380" style="animation-delay: -4.5s">CH₄</text>
+    <text class="formula float" x="850" y="180" style="animation-delay: -0.5s">O₂</text>
+  </g>
+  
+  <!-- DNA双螺旋结构 -->
+  <g class="dna" transform="translate(1000,200)">
+    <path class="math-curve" d="M0 0 Q10 25 0 50 Q-10 75 0 100 Q10 125 0 150 Q-10 175 0 200"/>
+    <path class="math-curve" d="M20 0 Q10 25 20 50 Q30 75 20 100 Q10 125 20 150 Q30 175 20 200"/>
+    <!-- DNA横向连接 -->
+    <line class="atom-orbit" x1="0" y1="12" x2="20" y2="12"/>
+    <line class="atom-orbit" x1="0" y1="38" x2="20" y2="38"/>
+    <line class="atom-orbit" x1="0" y1="62" x2="20" y2="62"/>
+    <line class="atom-orbit" x1="0" y1="88" x2="20" y2="88"/>
+    <line class="atom-orbit" x1="0" y1="112" x2="20" y2="112"/>
+    <line class="atom-orbit" x1="0" y1="138" x2="20" y2="138"/>
+    <line class="atom-orbit" x1="0" y1="162" x2="20" y2="162"/>
+    <line class="atom-orbit" x1="0" y1="188" x2="20" y2="188"/>
+  </g>
+  
+  <!-- 量子轨道 -->
+  <g class="quantum-orbital" transform="translate(350,200)">
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="60" ry="20" transform="rotate(0)"/>
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="60" ry="20" transform="rotate(45)"/>
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="60" ry="20" transform="rotate(90)"/>
+    <ellipse class="atom-orbit" cx="0" cy="0" rx="60" ry="20" transform="rotate(135)"/>
+    <circle class="nucleus pulse" cx="0" cy="0" r="4"/>
+  </g>
+  
+  <!-- 网络连接点 -->
+  <circle class="electron pulse" cx="200" cy="100" r="2"/>
+  <circle class="electron pulse" cx="600" cy="80" r="2" style="animation-delay: -1s"/>
+  <circle class="electron pulse" cx="400" cy="120" r="2" style="animation-delay: -2s"/>
+  <circle class="electron pulse" cx="800" cy="90" r="2" style="animation-delay: -0.5s"/>
+  <circle class="electron pulse" cx="1000" cy="110" r="2" style="animation-delay: -1.5s"/>
+  
+  <!-- 导弹发射轨迹 (左下到右上) -->
+  <g class="missile-trajectory">
+    <!-- 导弹轨迹线 -->
+    <path class="math-curve" d="M50 550 Q300 400 550 250 Q800 100 1150 50" stroke-width="2" stroke-dasharray="5,3">
+      <animate attributeName="stroke-dashoffset" values="0;-20" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <!-- 导弹本体 -->
+    <g class="missile" transform="translate(50,550) rotate(-35)">
+      <animateTransform attributeName="transform" type="translate" values="50,550;1150,50" dur="3s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="rotate" values="-35;-35" dur="3s" repeatCount="indefinite" additive="sum"/>
+      <!-- 导弹主体 -->
+      <rect class="nucleus" x="0" y="-2" width="20" height="4" rx="2"/>
+      <!-- 导弹头部 -->
+      <polygon class="nucleus" points="20,-2 25,0 20,2"/>
+      <!-- 导弹尾翼 -->
+      <polygon class="nucleus" points="0,-2 -3,-4 -3,4 0,2"/>
+      <!-- 推进尾焰 -->
+      <polygon class="math-curve" points="-3,-1 -8,0 -3,1" fill="rgba(255,165,0,0.8)">
+        <animate attributeName="points" values="-3,-1 -8,0 -3,1;-3,-1 -12,0 -3,1;-3,-1 -8,0 -3,1" dur="0.3s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+  </g>
+
+  <!-- 火箭发射 (右下往上) - 长征系列火箭 -->
+  <g class="rocket-launch">
+    <!-- 发射轨迹 -->
+    <path class="math-curve" d="M1100 550 L1100 50" stroke-width="3" stroke-dasharray="8,4" opacity="0.6">
+      <animate attributeName="stroke-dashoffset" values="0;-24" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+    <!-- 长征系列火箭 -->
+    <g class="changzheng-rocket" transform="translate(1100,550)">
+      <animateTransform attributeName="transform" type="translate" values="1100,550;1100,50" dur="4s" repeatCount="indefinite"/>
+      
+      <!-- 第一级火箭 (底部最大) -->
+      <rect class="nucleus" x="-8" y="-10" width="16" height="40" rx="2"/>
+      <!-- 第二级火箭 (中间) -->
+      <rect class="nucleus" x="-6" y="-45" width="12" height="35" rx="2"/>
+      <!-- 第三级火箭 (顶部) -->
+      <rect class="nucleus" x="-4" y="-65" width="8" height="20" rx="2"/>
+      
+      <!-- 火箭整流罩头部 (经典长征锥形) -->
+      <polygon class="nucleus" points="0,-65 -6,-75 6,-75"/>
+      
+      <!-- 助推器 (长征特色的4个侧面助推器) -->
+      <rect class="nucleus" x="-16" y="-5" width="6" height="30" rx="3"/>
+      <rect class="nucleus" x="10" y="-5" width="6" height="30" rx="3"/>
+      <rect class="nucleus" x="-4" y="-21" width="3" height="15" rx="1.5" transform="rotate(-20)"/>
+      <rect class="nucleus" x="1" y="-21" width="3" height="15" rx="1.5" transform="rotate(20)"/>
+      
+      <!-- 主推进器尾焰 (第一级) -->
+      <polygon class="math-curve" points="-6,30 0,50 6,30" fill="rgba(255,165,0,0.9)">
+        <animate attributeName="points" values="-6,30 0,50 6,30;-6,30 0,60 6,30;-6,30 0,50 6,30" dur="0.3s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 侧面助推器尾焰 -->
+      <polygon class="math-curve" points="-16,25 -13,35 -10,25" fill="rgba(255,165,0,0.8)">
+        <animate attributeName="points" values="-16,25 -13,35 -10,25;-16,25 -13,42 -10,25;-16,25 -13,35 -10,25" dur="0.25s" repeatCount="indefinite"/>
+      </polygon>
+      <polygon class="math-curve" points="10,25 13,35 16,25" fill="rgba(255,165,0,0.8)">
+        <animate attributeName="points" values="10,25 13,35 16,25;10,25 13,42 16,25;10,25 13,35 16,25" dur="0.25s" repeatCount="indefinite"/>
+      </polygon>
+      
+      <!-- 长征标识条纹 -->
+      <rect class="atom-orbit" x="-7" y="-8" width="14" height="2" fill="rgba(255,0,0,0.6)"/>
+      <rect class="atom-orbit" x="-5" y="-42" width="10" height="2" fill="rgba(255,0,0,0.6)"/>
+      
+      <!-- 火箭舱段分离线 -->
+      <line class="atom-orbit" x1="-8" y1="-10" x2="8" y2="-10" stroke-width="0.5"/>
+      <line class="atom-orbit" x1="-6" y1="-45" x2="6" y2="-45" stroke-width="0.5"/>
+      
+      <!-- 火箭窗口/传感器 -->
+      <circle class="electron" cx="0" cy="-30" r="1.5"/>
+      <circle class="electron" cx="0" cy="-55" r="1"/>
+    </g>
+  </g>
+
+  <!-- 小型长征火箭 (替换原来的火箭1) -->
+  <g class="small-changzheng" transform="translate(300,50) rotate(45)">
+    <!-- 主体 (长征比例) -->
+    <rect class="nucleus" x="-3" y="0" width="6" height="25" rx="3"/>
+    <!-- 第二级 -->
+    <rect class="nucleus" x="-2" y="-15" width="4" height="15" rx="2"/>
+    <!-- 整流罩 -->
+    <polygon class="nucleus" points="0,-15 -3,-22 3,-22"/>
+    <!-- 尾焰 -->
+    <polygon class="math-curve" points="-2,25 0,35 2,25" fill="rgba(255,165,0,0.7)">
+      <animate attributeName="points" values="-2,25 0,35 2,25;-2,25 0,42 2,25;-2,25 0,35 2,25" dur="0.4s" repeatCount="indefinite"/>
+    </polygon>
+    <!-- 长征标识 -->
+    <rect class="atom-orbit" x="-2.5" y="8" width="5" height="1" fill="rgba(255,0,0,0.5)"/>
+    <!-- 传感器 -->
+    <circle class="electron" cx="0" cy="5" r="1"/>
+  </g>
+
+  <!-- 中型长征火箭 (替换原来的火箭2) -->
+  <g class="medium-changzheng float" transform="translate(900,350) rotate(-30)" style="animation-delay: -2s">
+    <!-- 第一级 -->
+    <rect class="nucleus" x="-2.5" y="0" width="5" height="20" rx="2.5"/>
+    <!-- 第二级 -->
+    <rect class="nucleus" x="-2" y="-12" width="4" height="12" rx="2"/>
+    <!-- 整流罩 -->
+    <polygon class="nucleus" points="0,-12 -2.5,-18 2.5,-18"/>
+    <!-- 助推器 -->
+    <rect class="nucleus" x="-6" y="2" width="2" height="15" rx="1"/>
+    <rect class="nucleus" x="4" y="2" width="2" height="15" rx="1"/>
+    <!-- 主尾焰 -->
+    <polygon class="math-curve" points="-1.5,20 0,30 1.5,20" fill="rgba(255,165,0,0.6)">
+      <animate attributeName="points" values="-1.5,20 0,30 1.5,20;-1.5,20 0,38 1.5,20;-1.5,20 0,30 1.5,20" dur="0.5s" repeatCount="indefinite"/>
+    </polygon>
+    <!-- 助推器尾焰 -->
+    <polygon class="math-curve" points="-6,17 -5,25 -4,17" fill="rgba(255,165,0,0.5)">
+      <animate attributeName="points" values="-6,17 -5,25 -4,17;-6,17 -5,32 -4,17;-6,17 -5,25 -4,17" dur="0.45s" repeatCount="indefinite"/>
+    </polygon>
+    <polygon class="math-curve" points="4,17 5,25 6,17" fill="rgba(255,165,0,0.5)">
+      <animate attributeName="points" values="4,17 5,25 6,17;4,17 5,32 6,17;4,17 5,25 6,17" dur="0.45s" repeatCount="indefinite"/>
+    </polygon>
+    <!-- 长征标识条纹 -->
+    <rect class="atom-orbit" x="-2" y="6" width="4" height="0.8" fill="rgba(255,0,0,0.6)"/>
+    <!-- 传感器 -->
+    <circle class="electron" cx="0" cy="-3" r="0.8"/>
+  </g>
+
+  <!-- 航天员 1 (太空行走) -->
+  <g class="astronaut float" transform="translate(400,300)" style="animation-delay: -1s">
+    <!-- 头盔 -->
+    <circle class="nucleus" cx="0" cy="-15" r="8" fill="rgba(79,172,254,0.3)" stroke="rgba(79,172,254,0.8)" stroke-width="1"/>
+    <!-- 头盔反射 -->
+    <circle class="electron" cx="-3" cy="-18" r="2"/>
+    <!-- 身体 -->
+    <ellipse class="nucleus" cx="0" cy="0" rx="6" ry="12"/>
+    <!-- 手臂 -->
+    <line class="atom-orbit" x1="-6" y1="-5" x2="-12" y2="-8" stroke-width="2"/>
+    <line class="atom-orbit" x1="6" y1="-5" x2="12" y2="-8" stroke-width="2"/>
+    <!-- 腿部 -->
+    <line class="atom-orbit" x1="-3" y1="12" x2="-6" y2="20" stroke-width="2"/>
+    <line class="atom-orbit" x1="3" y1="12" x2="6" y2="20" stroke-width="2"/>
+    <!-- 手套 -->
+    <circle class="nucleus" cx="-12" cy="-8" r="3"/>
+    <circle class="nucleus" cx="12" cy="-8" r="3"/>
+    <!-- 脚部 -->
+    <ellipse class="nucleus" cx="-6" cy="20" rx="3" ry="2"/>
+    <ellipse class="nucleus" cx="6" cy="20" rx="3" ry="2"/>
+    <!-- 生命支持系统 -->
+    <rect class="nucleus" x="-4" y="3" width="8" height="6" rx="1"/>
+    <!-- 连接管线 -->
+    <path class="atom-orbit" d="M-4 6 Q-8 8 -10 12" stroke-width="1"/>
+    <path class="atom-orbit" d="M4 6 Q8 8 10 12" stroke-width="1"/>
+  </g>
+
+  <!-- 航天员 2 (空间站外) -->
+  <g class="astronaut pulse" transform="translate(900,150)" style="animation-delay: -3s">
+    <!-- 头盔 -->
+    <circle class="nucleus" cx="0" cy="-12" r="7" fill="rgba(79,172,254,0.3)" stroke="rgba(79,172,254,0.8)" stroke-width="1"/>
+    <!-- 头盔内部面罩 -->
+    <circle class="electron" cx="2" cy="-15" r="1.5"/>
+    <!-- 身体 (不同姿势) -->
+    <ellipse class="nucleus" cx="0" cy="2" rx="5" ry="10" transform="rotate(15)"/>
+    <!-- 手臂 (伸展状态) -->
+    <line class="atom-orbit" x1="-5" y1="-2" x2="-15" y2="5" stroke-width="2"/>
+    <line class="atom-orbit" x1="5" y1="-2" x2="15" y2="-5" stroke-width="2"/>
+    <!-- 腿部 (弯曲状态) -->
+    <line class="atom-orbit" x1="-2" y1="12" x2="-8" y2="18" stroke-width="2"/>
+    <line class="atom-orbit" x1="2" y1="12" x2="8" y2="16" stroke-width="2"/>
+    <!-- 手套和工具 -->
+    <circle class="nucleus" cx="-15" cy="5" r="2.5"/>
+    <circle class="nucleus" cx="15" cy="-5" r="2.5"/>
+    <!-- 工具 -->
+    <rect class="electron" x="13" y="-8" width="4" height="1"/>
+    <!-- 脚部 -->
+    <ellipse class="nucleus" cx="-8" cy="18" rx="2.5" ry="1.5"/>
+    <ellipse class="nucleus" cx="8" cy="16" rx="2.5" ry="1.5"/>
+    <!-- 背包推进器 -->
+    <rect class="nucleus" x="-3" y="8" width="6" height="4" rx="1"/>
+    <!-- 推进器喷口 -->
+    <circle class="electron pulse" cx="-2" cy="12" r="1"/>
+    <circle class="electron pulse" cx="2" cy="12" r="1"/>
+    <!-- 安全绳 -->
+    <path class="atom-orbit" d="M0 -5 Q20 -10 40 -15" stroke-dasharray="2,1" stroke-width="1"/>
+  </g>
+
+  <!-- 航天员 1 -->
+  <g class="astronaut float" transform="translate(150,250)" style="animation-delay: -1s">
+    <!-- 头盔 -->
+    <circle class="nucleus" cx="0" cy="-15" r="8" fill="rgba(79,172,254,0.3)" stroke="rgba(79,172,254,0.8)" stroke-width="1"/>
+    <!-- 头盔反射 -->
+    <circle class="electron" cx="-3" cy="-18" r="2"/>
+    <!-- 身体 -->
+    <ellipse class="nucleus" cx="0" cy="0" rx="6" ry="12"/>
+    <!-- 手臂 -->
+    <line class="atom-orbit" x1="-6" y1="-5" x2="-12" y2="-8" stroke-width="2"/>
+    <line class="atom-orbit" x1="6" y1="-5" x2="12" y2="-8" stroke-width="2"/>
+    <!-- 腿部 -->
+    <line class="atom-orbit" x1="-3" y1="12" x2="-6" y2="20" stroke-width="2"/>
+    <line class="atom-orbit" x1="3" y1="12" x2="6" y2="20" stroke-width="2"/>
+    <!-- 手套 -->
+    <circle class="nucleus" cx="-12" cy="-8" r="3"/>
+    <circle class="nucleus" cx="12" cy="-8" r="3"/>
+    <!-- 脚部 -->
+    <ellipse class="nucleus" cx="-6" cy="20" rx="3" ry="2"/>
+    <ellipse class="nucleus" cx="6" cy="20" rx="3" ry="2"/>
+    <!-- 生命支持系统 -->
+    <rect class="nucleus" x="-4" y="3" width="8" height="6" rx="1"/>
+    <!-- 连接管线 -->
+    <path class="atom-orbit" d="M-4 6 Q-8 8 -10 12" stroke-width="1"/>
+    <path class="atom-orbit" d="M4 6 Q8 8 10 12" stroke-width="1"/>
+  </g>
+
+  <!-- 航天员 2 -->
+  <g class="astronaut pulse" transform="translate(900,150)" style="animation-delay: -3s">
+    <!-- 头盔 -->
+    <circle class="nucleus" cx="0" cy="-12" r="7" fill="rgba(79,172,254,0.3)" stroke="rgba(79,172,254,0.8)" stroke-width="1"/>
+    <!-- 头盔内部面罩 -->
+    <circle class="electron" cx="2" cy="-15" r="1.5"/>
+    <!-- 身体 (不同姿势) -->
+    <ellipse class="nucleus" cx="0" cy="2" rx="5" ry="10" transform="rotate(15)"/>
+    <!-- 手臂 (伸展状态) -->
+    <line class="atom-orbit" x1="-5" y1="-2" x2="-15" y2="5" stroke-width="2"/>
+    <line class="atom-orbit" x1="5" y1="-2" x2="15" y2="-5" stroke-width="2"/>
+    <!-- 腿部 (弯曲状态) -->
+    <line class="atom-orbit" x1="-2" y1="12" x2="-8" y2="18" stroke-width="2"/>
+    <line class="atom-orbit" x1="2" y1="12" x2="8" y2="16" stroke-width="2"/>
+    <!-- 手套和工具 -->
+    <circle class="nucleus" cx="-15" cy="5" r="2.5"/>
+    <circle class="nucleus" cx="15" cy="-5" r="2.5"/>
+    <!-- 工具 -->
+    <rect class="electron" x="13" y="-8" width="4" height="1"/>
+    <!-- 脚部 -->
+    <ellipse class="nucleus" cx="-8" cy="18" rx="2.5" ry="1.5"/>
+    <ellipse class="nucleus" cx="8" cy="16" rx="2.5" ry="1.5"/>
+    <!-- 背包推进器 -->
+    <rect class="nucleus" x="-3" y="8" width="6" height="4" rx="1"/>
+    <!-- 推进器喷口 -->
+    <circle class="electron pulse" cx="-2" cy="12" r="1"/>
+    <circle class="electron pulse" cx="2" cy="12" r="1"/>
+    <!-- 安全绳 -->
+    <path class="atom-orbit" d="M0 -5 Q20 -10 40 -15" stroke-dasharray="2,1" stroke-width="1"/>
+  </g>
+
+  <!-- 连接线 -->
+  <line class="atom-orbit" x1="200" y1="100" x2="400" y2="120" stroke-dasharray="2,2"/>
+  <line class="atom-orbit" x1="400" y1="120" x2="600" y2="80" stroke-dasharray="2,2"/>
+  <line class="atom-orbit" x1="600" y1="80" x2="800" y2="90" stroke-dasharray="2,2"/>
+  <line class="atom-orbit" x1="800" y1="90" x2="1000" y2="110" stroke-dasharray="2,2"/>
+</svg>
