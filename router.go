@@ -19,7 +19,10 @@ func setupRouter(webFiles embed.FS) *mux.Router {
 
 	// 认证相关路由
 	api.HandleFunc("/auth", handlers.AuthHandler).Methods("POST")
-	// 已移除 /release 端点 - 放行请求现在由客户端直接发起
+	api.HandleFunc("/auth/network", handlers.AuthHandler).Methods("POST") // 网络设备认证路由（经过后端处理）
+
+	// 配置API - 返回前端需要的配置信息
+	api.HandleFunc("/config", handlers.ConfigHandler).Methods("GET")
 
 	// 健康检查
 	api.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {

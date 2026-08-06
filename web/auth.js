@@ -9,7 +9,58 @@ class IKuaiAuth {
         this.userMAC = '';
         this.gwid = '';
         this.routerInfo = {};
+        this.debugMode = false; // 默认关闭，从配置读取
+        this.config = null; // 配置信息（从后端获取）
         this.init();
+    }
+
+    // 添加调试日志到页面
+    addDebugLog(message, type = 'info') {
+        if (!this.debugMode) return;
+        
+        const debugInfo = document.getElementById('debugInfo');
+        const debugContent = document.getElementById('debugContent');
+        
+        if (debugInfo && debugContent) {
+            debugInfo.style.display = 'block';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            let color = '#0f0';
+            let icon = 'ℹ️';
+            
+            switch(type) {
+                case 'success':
+                    color = '#0f0';
+                    icon = '✅';
+                    break;
+                case 'error':
+                    color = '#f00';
+                    icon = '❌';
+                    break;
+                case 'warning':
+                    color = '#ff0';
+                    icon = '⚠️';
+                    break;
+                case 'request':
+                    color = '#0af';
+                    icon = '📤';
+                    break;
+                case 'response':
+                    color = '#f0f';
+                    icon = '📥';
+                    break;
+            }
+            
+            const logEntry = document.createElement('div');
+            logEntry.style.marginBottom = '8px';
+            logEntry.style.color = color;
+            logEntry.innerHTML = `[${timestamp}] ${icon} ${message}`;
+            
+            debugContent.appendChild(logEntry);
+            debugContent.scrollTop = debugContent.scrollHeight;
+        }
+        
+        console.log(message);
     }
 
     // 解析URL参数（iKuai传递的参数）
@@ -52,11 +103,26 @@ class IKuaiAuth {
 
     // 初始化
     async init() {
+        await this.loadConfig(); // 先加载配置
         this.parseRouterInfo();
         await this.getDeviceInfo();
         this.bindEvents();
         this.loadSavedUsername();
         this.displayRouterInfo();
+    }
+
+    // 加载配置
+    async loadConfig() {
+        try {
+            const response = await fetch(`${this.apiBase}/config`);
+            if (response.ok) {
+                this.config = await response.json();
+                this.debugMode = this.config.debug || false; // 从配置读取debug状态
+                console.log('配置加载成功:', this.config);
+            }
+        } catch (error) {
+            console.error('配置加载失败:', error);
+        }
     }
 
     // 解析路由器信息
@@ -88,13 +154,8 @@ class IKuaiAuth {
     // 获取设备信息
     async getDeviceInfo() {
         try {
-            // 优先从 URL 参数获取用户 IP
+            // 从 URL 参数获取用户内网IP
             this.userIP = this.urlParams.user_ip || '';
-            
-            // 如果URL参数没有IP，尝试其他方式
-            if (!this.userIP) {
-                this.userIP = await this.getUserIPFromAPI();
-            }
             
             // 获取 MAC 地址（从 URL 参数）
             this.userMAC = this.urlParams.mac || '';
@@ -103,6 +164,11 @@ class IKuaiAuth {
             document.getElementById('userIP').textContent = this.userIP || '未知';
             document.getElementById('userMAC').textContent = this.userMAC || '未获取';
             
+            // 获取公网IP
+            this.getPublicIP();
+            
+            // 添加调试日志
+            this.addDebugLog(`设备信息获取 - IP: ${this.userIP || '空'}, MAC: ${this.userMAC || '空'}`, 'info');
             console.log('设备信息 - IP:', this.userIP, 'MAC:', this.userMAC);
             
         } catch (error) {
@@ -111,17 +177,46 @@ class IKuaiAuth {
         }
     }
 
-    // 从API获取用户 IP 地址（备用方案）
-    async getUserIPFromAPI() {
+    // 获取公网IP地址
+    async getPublicIP() {
+        const publicIPElement = document.getElementById('publicIP');
         try {
-            const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            return data.ip;
+            publicIPElement.textContent = '查询中...';
+            
+            // 尝试多个公网IP查询服务
+            const apis = [
+                'https://api.ipify.org?format=json',
+                'https://api64.ipify.org?format=json',
+                'https://api.ip.sb/jsonip'
+            ];
+            
+            for (const api of apis) {
+                try {
+                    const response = await fetch(api, { timeout: 3000 });
+                    const data = await response.json();
+                    const ip = data.ip || data.query;
+                    
+                    if (ip) {
+                        publicIPElement.textContent = ip;
+                        publicIPElement.style.color = '#52c41a';
+                        this.addDebugLog(`公网IP: ${ip}`, 'info');
+                        return;
+                    }
+                } catch (err) {
+                    console.log(`API ${api} 失败，尝试下一个...`);
+                }
+            }
+            
+            throw new Error('所有API都失败');
+            
         } catch (error) {
-            console.error('获取 IP 失败:', error);
-            return '';
+            console.error('获取公网IP失败:', error);
+            publicIPElement.textContent = '查询失败';
+            publicIPElement.style.color = '#ff4d4f';
         }
     }
+
+
 
     // 绑定事件
     bindEvents() {
@@ -166,6 +261,8 @@ class IKuaiAuth {
         const messageDiv = document.getElementById('message');
 
         try {
+            this.addDebugLog('开始认证流程...', 'info');
+            
             // 设置加载状态
             submitBtn.disabled = true;
             submitBtn.classList.add('ant-btn-loading');
@@ -176,55 +273,62 @@ class IKuaiAuth {
 
             // 收集表单数据
             const formData = this.collectFormData();
-            console.log('📋 发送认证请求:', formData);
+            this.addDebugLog(`表单数据: ${JSON.stringify(formData, null, 2)}`, 'info');
             
             // 验证必需字段
             if (!this.validateForm(formData)) {
+                this.addDebugLog('表单验证失败', 'error');
                 return;
             }
 
-            // 发送认证请求
-            console.log(`🌐 请求URL: ${this.apiBase}/auth`);
-            const response = await fetch(`${this.apiBase}/auth`, {
+            // 调用同服务器的认证API（无需跨域）
+            const apiUrl = `${this.apiBase}/auth/network`;
+            this.addDebugLog(`请求URL: ${apiUrl}`, 'request');
+            this.addDebugLog(`请求体: ${JSON.stringify(formData, null, 2)}`, 'request');
+            
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             });
 
-            console.log(`📡 HTTP状态码: ${response.status}`);
+            this.addDebugLog(`HTTP状态码: ${response.status}`, 'response');
+            
             const result = await response.json();
-            console.log('📥 服务器响应:', result);
+            this.addDebugLog(`后端响应: ${JSON.stringify(result, null, 2)}`, 'response');
 
             if (result.success) {
-                console.log('✅ 认证成功');
+                this.addDebugLog('认证成功！', 'success');
                 this.showMessage('认证成功！准备跳转...', 'success');
 
                 // 保存用户名
                 this.saveUsername();
 
-                // 获取放行 URL 并跳转到成功页面（不自动发起请求）
+                // 使用后端返回的放行URL
                 const releaseURL = result.data.release_url;
-                const debugMode = result.debug || false; // 获取调试模式标志
-                const formData = this.collectFormData();
+                
+                this.addDebugLog(`生成放行URL: ${releaseURL}`, 'success');
+                
+                this.addDebugLog(`生成放行URL: ${releaseURL}`, 'success');
                 
                 // 构建成功页面URL，传递用户信息、放行URL和调试模式标志
-                const successUrl = `/success?username=${encodeURIComponent(formData.username)}&ip=${encodeURIComponent(formData.user_ip)}&mac=${encodeURIComponent(formData.mac)}&release_url=${encodeURIComponent(releaseURL)}&debug=${debugMode ? '1' : '0'}`;
+                const username = formData.user_account || formData.phone || '未知';
+                const successUrl = `/success?username=${encodeURIComponent(username)}&ip=${encodeURIComponent(formData.ip_address)}&mac=${encodeURIComponent(formData.mac_address)}&release_url=${encodeURIComponent(releaseURL)}&debug=${this.debugMode ? '1' : '0'}`;
                 
-                console.log('🎉 跳转到成功页面，调试模式:', debugMode);
+                this.addDebugLog(`准备跳转到成功页面...`, 'success');
                 setTimeout(() => {
                     window.location.href = successUrl;
-                }, 1000);
+                }, 2000);
             } else {
-                console.log('❌ 认证失败:', result.message);
+                this.addDebugLog(`认证失败: ${result.message}`, 'error');
                 this.showMessage(`认证失败: ${result.message}`, 'error');
             }
 
         } catch (error) {
-            console.error('❌ 认证过程出错:', error);
-            console.error('错误详情:', error.message);
-            console.error('错误堆栈:', error.stack);
+            this.addDebugLog(`认证过程出错: ${error.message}`, 'error');
+            this.addDebugLog(`错误堆栈: ${error.stack}`, 'error');
             this.showMessage('认证过程出错，请重试', 'error');
         } finally {
             // 恢复提交按钮状态
@@ -237,14 +341,28 @@ class IKuaiAuth {
 
     // 收集表单数据（包含iKuai所需的所有参数）
     collectFormData() {
+        // 获取表单输入的必填字段
+        const deviceNumber = document.getElementById('deviceNumber')?.value.trim() || '';
+        const vpnNumber = document.getElementById('vpnNumber')?.value.trim() || '';
+        const phone = document.getElementById('phone')?.value.trim() || '';
+        
+        // 用户名密码字段（可能不存在，因为已隐藏）
+        const username = document.getElementById('username')?.value.trim() || '';
+        const password = document.getElementById('password')?.value || '';
+        
         return {
-            // 用户输入
-            username: document.getElementById('username').value.trim(),
-            password: document.getElementById('password').value,
+            // API 认证必填字段（符合后端期望格式）
+            device_number: deviceNumber,           // 设备编号
+            user_account: phone || username,       // 使用人账号（优先使用手机号）
+            vpn_number: vpnNumber,                 // VPN线路编号
+            mac_address: this.userMAC,             // MAC地址
+            ip_address: this.userIP,               // IP地址
+            system_id: 1,                          // 路由系统ID（固定为1）
             
-            // 设备信息（从URL参数获取）
-            user_ip: this.userIP,
-            mac: this.userMAC,
+            // 额外信息（兼容字段）
+            username: username,
+            password: password,
+            phone: phone,
             
             // 路由器信息（从URL参数获取）
             gwid: this.gwid,
@@ -257,21 +375,39 @@ class IKuaiAuth {
 
     // 验证表单
     validateForm(data) {
-        if (!data.username) {
-            this.showMessage('请输入用户名', 'error');
+        // 验证设备信息（主要认证字段）
+        if (!data.device_number) {
+            this.addDebugLog('验证失败: 缺少设备编号', 'error');
+            this.showMessage('请输入设备编号', 'error');
             return false;
         }
 
-        if (!data.password) {
-            this.showMessage('请输入密码', 'error');
+        if (!data.vpn_number) {
+            this.addDebugLog('验证失败: 缺少VPN线路编号', 'error');
+            this.showMessage('请输入VPN线路编号', 'error');
             return false;
         }
 
-        if (!data.user_ip) {
+        if (!data.user_account) {
+            this.addDebugLog('验证失败: 缺少用户账号', 'error');
+            this.showMessage('请输入使用人手机号', 'error');
+            return false;
+        }
+
+        if (!data.ip_address) {
+            this.addDebugLog('验证失败: 缺少IP地址', 'error');
             this.showMessage('无法获取设备 IP 地址', 'error');
             return false;
         }
 
+        if (!data.mac_address) {
+            this.addDebugLog('验证失败: 缺少MAC地址', 'error');
+            this.showMessage('无法获取设备 MAC 地址', 'error');
+            return false;
+        }
+
+        this.addDebugLog('表单验证通过', 'success');
+        // 用户名和密码是可选的，不需要验证
         return true;
     }
 
@@ -372,8 +508,15 @@ class IKuaiAuth {
 
     // 保存用户名到本地存储
     saveUsername() {
-        const username = document.getElementById('username').value;
+        const usernameInput = document.getElementById('username');
         const rememberCheckbox = document.getElementById('remember');
+        
+        // 如果用户名输入框不存在（被隐藏），直接返回
+        if (!usernameInput) {
+            return;
+        }
+        
+        const username = usernameInput.value;
         
         // 检查remember复选框是否存在
         const remember = rememberCheckbox ? rememberCheckbox.checked : true;
@@ -416,53 +559,21 @@ document.addEventListener('DOMContentLoaded', () => {
     new IKuaiAuth();
 });
 
-// 处理页面可见性变化（用户可能切换到其他应用）
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-        // 页面重新可见时，可以检查网络状态
-        console.log('页面重新可见');
-    }
-});
-
-// 工具函数
-const Utils = {
-    // URL 参数解析
-    getURLParams() {
-        const params = {};
-        const urlParams = new URLSearchParams(window.location.search);
-        for (const [key, value] of urlParams) {
-            params[key] = value;
-        }
-        return params;
-    },
-
-    // 设备检测
-    isMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    },
-
-    // 时间格式化
-    formatTime(timestamp) {
-        return new Date(timestamp * 1000).toLocaleString('zh-CN');
-    }
-};
-
-// 调试模式
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    console.log('调试模式已启用');
+// 获取后端配置（缓存配置避免重复请求）
+let cachedConfig = null;
+async function getConfig() {
+    if (cachedConfig) return cachedConfig;
     
-    // 显示更多调试信息
-    window.debugInfo = () => {
-        console.log('URL 参数:', Utils.getURLParams());
-        console.log('用户代理:', navigator.userAgent);
-        console.log('是否移动设备:', Utils.isMobile());
-    };
-    
-    // 自动填充测试数据
-    setTimeout(() => {
-        if (document.getElementById('username').value === '') {
-            document.getElementById('username').value = 'test';
-            document.getElementById('password').value = 'test123';
-        }
-    }, 1000);
+    try {
+        const response = await fetch(`${window.location.protocol}//${window.location.host}/api/config`);
+        if (!response.ok) throw new Error('获取配置失败');
+        cachedConfig = await response.json();
+        return cachedConfig;
+    } catch (error) {
+        console.error('获取配置失败，使用默认值:', error);
+        // 返回默认配置（不包含app_key，前端不需要）
+        return {
+            debug: false
+        };
+    }
 }

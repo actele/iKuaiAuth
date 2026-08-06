@@ -519,13 +519,21 @@
             // 清空之前的内容
             debugContent.innerHTML = '';
             
+            // 辅助函数：转义HTML特殊字符（防止&被解析为HTML实体）
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
             // 显示原始URL
             const urlSection = document.createElement('div');
             urlSection.className = 'debug-section';
             urlSection.innerHTML = `
                 <div class="debug-label">📡 放行URL（原始）</div>
-                <div class="debug-content">${releaseURL}</div>
+                <div class="debug-content"></div>
             `;
+            urlSection.querySelector('.debug-content').textContent = releaseURL;
             debugContent.appendChild(urlSection);
             
             // 显示解码后的URL
@@ -533,8 +541,9 @@
             decodedSection.className = 'debug-section';
             decodedSection.innerHTML = `
                 <div class="debug-label">📋 放行URL（解码）</div>
-                <div class="debug-content">${decodeURIComponent(releaseURL)}</div>
+                <div class="debug-content"></div>
             `;
+            decodedSection.querySelector('.debug-content').textContent = decodeURIComponent(releaseURL);
             debugContent.appendChild(decodedSection);
             
             // 解析URL参数
@@ -607,40 +616,22 @@
                     window.location.href = releaseURL;
                 }, 3000);
             } else {
-                // 非调试模式：静默发起放行请求，然后跳转到导航页
-                console.log('🌐 自动发起放行请求（静默模式）');
-                
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.id = 'releaseFrame';
-                iframe.onload = () => {
-                    console.log('✅ 放行请求已完成');
-                    // 放行成功后跳转到导航页
-                    setTimeout(() => {
-                        window.location.href = '/nav';
-                    }, 500);
-                };
-                iframe.onerror = () => {
-                    console.log('⚠️ 放行请求出错');
-                    // 即使出错也跳转到导航页
-                    setTimeout(() => {
-                        window.location.href = '/nav';
-                    }, 500);
-                };
-                
-                document.body.appendChild(iframe);
-                iframe.src = releaseURL;
+                // 非调试模式：直接跳转到放行URL
+                console.log('🌐 直接跳转到放行URL');
                 
                 const btn = document.getElementById('releaseBtn');
                 if (btn) {
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 放行中...';
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在跳转...';
                     btn.disabled = true;
                 }
                 
                 const countdownEl = document.getElementById('countdown');
                 if (countdownEl) {
-                    countdownEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在放行并跳转...';
+                    countdownEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在跳转到放行页面...';
                 }
+                
+                // 直接跳转到放行URL
+                window.location.href = releaseURL;
             }
         }
 

@@ -124,6 +124,29 @@
             opacity: 0.9;
         }
 
+        .public-ip {
+            color: rgba(0, 0, 0, 0.65);
+            font-size: 13px;
+            margin-top: 8px;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .public-ip i {
+            color: #52c41a;
+            font-size: 12px;
+        }
+
+        body.dark-mode .public-ip {
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        body.dark-mode .public-ip i {
+            color: #52c41a;
+        }
+
         .search-section {
             background: white;
             border-radius: 16px;
@@ -554,6 +577,10 @@
                     </div>
                 </div>
                 <div class="greeting" id="greeting">早上好！</div>
+                <div class="public-ip" id="publicIP">
+                    <i class="fas fa-globe"></i>
+                    <span>获取中...</span>
+                </div>
             </div>
         </div>
 
@@ -822,6 +849,23 @@
             document.getElementById('greeting').textContent = greeting;
         }
 
+        // 获取公网IP
+        async function getPublicIP() {
+            const publicIPElement = document.getElementById('publicIP');
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                if (response.ok) {
+                    const data = await response.json();
+                    publicIPElement.innerHTML = `<i class="fas fa-globe"></i><span>公网IP: ${data.ip}</span>`;
+                } else {
+                    publicIPElement.innerHTML = `<i class="fas fa-globe"></i><span>IP获取失败</span>`;
+                }
+            } catch (error) {
+                console.error('获取公网IP失败:', error);
+                publicIPElement.innerHTML = `<i class="fas fa-globe"></i><span>IP获取失败</span>`;
+            }
+        }
+
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 初始化主题
@@ -830,6 +874,8 @@
             updateDateTime();
             // 每秒更新时间
             setInterval(updateDateTime, 1000);
+            // 获取公网IP
+            getPublicIP();
             // 聚焦搜索框
             document.getElementById('searchInput').focus();
         });

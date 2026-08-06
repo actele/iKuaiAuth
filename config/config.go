@@ -18,6 +18,7 @@ type Config struct {
 			URL          string            `yaml:"url"`
 			Method       string            `yaml:"method"`
 			Timeout      int               `yaml:"timeout"`
+			SystemID     int               `yaml:"system_id"` // 软路由系统ID
 			Headers      map[string]string `yaml:"headers"`
 			BodyTemplate string            `yaml:"body_template"`
 			Response     struct {
