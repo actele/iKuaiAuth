@@ -297,6 +297,69 @@ auth:
       message_field: "reason"
 ```
 
+### 示例 5: 网络设备认证（Device Authentication）
+
+如果您的 API 使用网络设备认证格式，返回用户详细信息：
+
+```yaml
+auth:
+  method: "api"
+  api:
+    url: "http://192.168.1.100:8000/api/v1/network-auth/authenticate"
+    method: "POST"
+    timeout: 5
+    headers:
+      Content-Type: "application/json"
+      X-API-Version: "v1"
+    body_template: |
+      {
+        "device_number": "",
+        "user_account": "{{username}}",
+        "vpn_number": "",
+        "mac_address": "{{password}}",
+        "ip_address": "auto",
+        "system_id": 1
+      }
+    response:
+      success_field: "code"
+      success_value: 0
+      message_field: "msg"
+```
+
+**API 响应格式：**
+
+```json
+{
+  "code": 0,
+  "msg": "认证成功",
+  "data": {
+    "allowed": true,
+    "reason": "",
+    "user_id": "U1001",
+    "username": "test_user",
+    "real_name": "张三",
+    "phone": "13800138000",
+    "custom_name": "测试用户",
+    "device_number": "1001",
+    "assigned_to": "李四",
+    "vpn_client": "OpenVPN"
+  }
+}
+```
+
+**用户信息映射：**
+
+系统会自动提取 API 返回的用户信息并映射到 iKuai 认证参数：
+
+| API 字段 | iKuai 参数 | 说明 |
+|----------|-----------|------|
+| `data.username` | `user_id` | 用户标识 |
+| `data.username` | `custom_name` | 自定义名称 |
+| `data.real_name` | `name` | 真实姓名 |
+| `data.phone` | `phone` | 联系电话 |
+
+如果 API 未返回用户信息，系统将使用默认格式 `1020004_用户名`。
+
 ## 测试验证
 
 ### 1. 启用调试模式

@@ -149,16 +149,29 @@ iKuaiAuth/
 ├── main.go              # 应用入口
 ├── router.go            # 路由配置
 ├── config/              # 配置模块
+│   └── config.go       # 配置结构定义
 ├── handlers/            # 请求处理
+│   └── auth.go         # 认证处理器
 ├── utils/               # 工具函数
 │   ├── token.go        # MD5 token 计算
-│   └── api_auth.go     # API 认证
+│   ├── api_auth.go     # API 认证
+│   └── logger.go       # 日志工具
 ├── web/                 # 前端资源（嵌入）
 │   ├── index.html      # 登录页
 │   ├── success.html    # 成功页
-│   └── nav.html        # 导航页
+│   ├── nav.html        # 导航页
+│   └── auth.js         # 认证逻辑
 ├── docs/                # 项目文档
-└── scripts/             # 部署脚本
+│   ├── DEPLOYMENT.md   # 部署指南
+│   ├── API_AUTH.md     # API 认证配置
+│   ├── NETWORK_AUTH.md # 网络设备认证
+│   ├── ARCHITECTURE.md # 系统架构
+│   ├── TESTING.md      # 测试指南
+│   └── CONTRIBUTING.md # 贡献指南
+└── scripts/             # 构建和部署脚本
+    ├── build-ubuntu.sh # Ubuntu 编译脚本
+    ├── build-embedded.sh # 嵌入式编译脚本
+    └── start.sh        # 启动脚本
 ```
 
 ## �️ 调试模式
@@ -200,7 +213,7 @@ server:
 4. 推送分支 (`git push origin feature/AmazingFeature`)
 5. 提交 Pull Request
 
-查看 [贡献指南](CONTRIBUTING.md) 了解更多
+查看 [贡献指南](docs/CONTRIBUTING.md) 了解更多
 
 ## 📄 许可证
 

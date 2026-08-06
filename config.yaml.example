@@ -54,6 +54,48 @@ auth:
 #       message_field: "message"       # 错误消息字段名（可选）
 
 # ============================================
+# 示例3: 网络设备认证（使用API模式）
+# ============================================
+# 网络设备认证也使用 "api" 模式，通过特定的请求格式实现：
+#
+# auth:
+#   method: "api"
+#   
+#   api:
+#     url: "http://192.168.1.100:8000/api/v1/network-auth/authenticate"
+#     method: "POST"
+#     timeout: 5
+#     
+#     headers:
+#       Content-Type: "application/json"
+#       X-API-Version: "v1"
+#     
+#     # 网络设备认证请求格式
+#     # 说明: 前端用户名→user_account，密码→mac_address
+#     body_template: |
+#       {
+#         "device_number": "",
+#         "user_account": "{{username}}",
+#         "vpn_number": "",
+#         "mac_address": "{{password}}",
+#         "ip_address": "auto",
+#         "system_id": 1
+#       }
+#     
+#     # API返回格式: {"code": 0, "msg": "成功", "data": {...}}
+#     response:
+#       success_field: "code"
+#       success_value: 0
+#       message_field: "msg"
+#
+# 用户信息映射:
+#   - API返回的 data.username → iKuai的 user_id / custom_name
+#   - API返回的 data.real_name → iKuai的 name
+#   - API返回的 data.phone → iKuai的 phone
+#
+# 详细文档: docs/NETWORK_AUTH.md 和 docs/API_AUTH.md
+
+# ============================================
 # API响应格式说明
 # ============================================
 # 
@@ -76,16 +118,39 @@ auth:
 # 其他API响应格式示例
 # ============================================
 #
-# 格式1: {"code": 0, "msg": "ok"}
+# 格式1: 状态码型 {"code": 0, "msg": "ok", "data": {...}}
 # 配置:
 #   response:
 #     success_field: "code"
 #     success_value: 0
 #     message_field: "msg"
 #
-# 格式2: {"status": "success", "error": null}
+# 格式2: 字符串型 {"status": "success", "error": null}
 # 配置:
 #   response:
 #     success_field: "status"
 #     success_value: "success"
 #     message_field: "error"
+#
+# 格式3: 嵌套字段 {"code": 200, "data": {"allowed": true}}
+# 配置:
+#   response:
+#     success_field: "code"
+#     success_value: 200
+#     message_field: "data.reason"
+
+# ============================================
+# 快速开始
+# ============================================
+# 1. 复制配置: cp config.yaml.example config.yaml
+# 2. 修改 AppKey: 将 your_app_key_here 改为实际值
+# 3. 选择认证模式:
+#    - 本地认证: method: "simple"（默认）
+#    - API认证: method: "api"（需配置 api 部分）
+# 4. 重启服务: sudo systemctl restart ikuai-auth
+# 5. 查看日志: sudo journalctl -u ikuai-auth -f
+#
+# 详细文档:
+#   - 部署指南: docs/DEPLOYMENT.md
+#   - API认证: docs/API_AUTH.md
+#   - 网络认证: docs/NETWORK_AUTH.md
